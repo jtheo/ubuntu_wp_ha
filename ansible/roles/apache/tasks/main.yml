@@ -1,7 +1,28 @@
 ---
 
+- name: Add repository
+  yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+    gpgcheck: no
+
 - name: Ensure httpd is installed
   yum: name=httpd state=installed
+
+- name: Ensure PHP Packages are installed
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: ['php', 'php-common', 'php-mysql', 'php-gd', 'php-xml', 'php-mbstring', 'php-mcrypt']
+
+- name: Create link for mime.types
+  file:
+    dest: /etc/httpd/conf/mime.types
+    src: /etc/mime.types
+    state: link
+
+
 
 - name: Copy httpd configuration in place.
   template:
@@ -11,11 +32,18 @@
     validate: apachectl -t
   notify: restart httpd
 
+- name: Create DocumentRoot
+  file:
+    path: "{{ documentroot }}"
+    state: directory
+    mode: 755
+    owner: apache
+    group: apache
 
 - name: Copy Virtualhost config
   template:
     src: wordpress.conf.j2
-    dest: /etc/httpd/conf.conf/wordpress.conf
+    dest: /etc/httpd/conf.d/wordpress.conf
     mode: 0644
     validate: apachectl -t
   notify: reload httpd

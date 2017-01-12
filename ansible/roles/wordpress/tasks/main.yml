@@ -1,7 +1,5 @@
 ---
 
-
-
 - name: Install wpcli
   get_url:
     url: https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
@@ -9,60 +7,60 @@
     mode: 0755
 
 
-- name: Create DocumentRoot
-  file:
-    path: " {{ documentroot }}"
-    state: directory
-    mode: 755
-    owner: www-data
-    group: www-data
-
-
 - name: Check if Wordpress is Installed
-  command: wp-cli core version
+  command: /usr/local/bin/wp-cli core version
   args:
-    chdir: " {{ documentroot }}"
+    chdir: "{{ documentroot }}"
   register: result
   ignore_errors: True
 
 
 - name: Download Wordpress core
-  command: wp-cli core download
+  command: /usr/local/bin/wp-cli core download
   args:
-    chdir: " {{ documentroot }}"
+    chdir: "{{ documentroot }}"
   when: result|failed
 
+- name: Check if wp-config already exist
+  stat: path={{ documentroot }}/wp-config.php
+  register: wp-config
+
 - name: Create the wp-config file
-  command: wp-cli core config --dbname={{ db.name }} --dbuser={{ db.user }} --dbpass={{ db.pass }}
+  command: /usr/local/bin/wp-cli core config --dbname={{ db.name }} --dbuser={{ db.user }} --dbpass={{ db.pass }}
   args:
-    chdir: " {{ documentroot }}"
-  when: result|failed
+    chdir: "{{ documentroot }}"
+  when: wp-config.stat.exists == False
 
 
 - name: create database
-  command: wp-cli db create
+  command: /usr/local/bin/wp-cli db create
   args:
-    chdir: " {{ documentroot }}"
-  when: result|failed
+    chdir: "{{ documentroot }}"
+  when: wp-config.stat.exists == False
 
 - name: Install WordPress
-  command: wp-cli core install --url=http://localhost --title="{{ blog.title }}"  --admin_user="{{ blog.admin }}" --admin_password="{{ blog.pass }}" --admin_email="{{ blog.email }}"
+  command: /usr/local/bin/wp-cli core install --url=http://localhost --title="{{ blog.title }}"  --admin_user="{{ blog.admin }}" --admin_password="{{ blog.pass }}" --admin_email="{{ blog.email }}"
   args:
-    chdir: " {{ documentroot }}"
+    chdir: "{{ documentroot }}"
   when: result|failed
 
 - name: Ensure nfs-utils is installed
   yum: name=nfs-utils state=installed
-  
+
 - name: Mount nfs
-  mount: 
-    name:{{ documentroot }}/wp-content/uploads
-    src: {{hostvars[groups['be'][0]]['ansible_eth0']['ipv4']['address']}}:/{{ nfs_share }} 
-    fstype: nfs 
-    opts: defaults,nobootwait 
-    dump: 0 
-    passno: 2 
+  mount:
+    name: "{{ documentroot }}/wp-content/uploads"
+    src: "{{hostvars[groups['be'][0]]['ansible_eth0']['ipv4']['address']}}:/{{ nfs_share }}"
+    fstype: nfs
+    opts: defaults,nobootwait
+    dump: 0
+    passno: 2
     state: mounted
 
 
+- name: Save the script to create a few posts
+  template:
+    src: create_post.sh.j2
+    dest: /usr/local/bin/create_post.sh
+    mode: 0755
 

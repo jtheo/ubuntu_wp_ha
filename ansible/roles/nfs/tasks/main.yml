@@ -14,9 +14,11 @@
 - name: Create exports
   copy:
     content: "{{ nfs_share }}  192.168.123.0/24(rw,fsid=0,no_subtree_check,sync,no_root_squash)"
-  owner: root
-  group: root
-  mode: 0644
+    dest: /etc/exports
+    owner: root
+    group: root
+    mode: 0644
+    notify: Reload nfs 
 
 - name: Ensure nfs is started and enabled on boot.
   service: name=nfs state=started enabled=yes

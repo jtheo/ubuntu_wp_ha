@@ -1,8 +1,8 @@
 ---
 
-docroot: /var/www/wordpress
+documentroot: /var/www/wordpress
 blog:
-  title: 'The Hitchhiker's Test for the Galaxy'
+  title: "The Hitchhiker's Test for the Galaxy"
   admin: 'zaphod'
   pass: 'Slartibartfast'
   email: 'zaphod@dadams.com'
