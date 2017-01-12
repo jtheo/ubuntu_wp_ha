@@ -1,0 +1,27 @@
+#
+# {{ ansible_managed }}
+#
+
+######### Conf ######################
+ServerTokens ProductOnly
+KeepAlive On
+MaxKeepAliveRequests 500
+KeepAliveTimeout 5
+
+####### Prefork MPM #########################
+<IfModule prefork.c>
+StartServers       20
+MinSpareServers    10
+MaxSpareServers    40
+ServerLimit       250
+MaxClients        250
+MaxRequestsPerChild  4000
+ListenBackLog   1000
+</IfModule>
+
+TraceEnable Off
+ServerSignature Off
+FileETag none
+
+
+Include conf.d/*.conf

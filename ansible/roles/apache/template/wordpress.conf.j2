@@ -1,0 +1,18 @@
+<VirtualHost *:80>
+  ServerName localhost
+  ServerAdmin webmaster@dadams.com
+
+  CustomLog "/var/log/httpd/access.log" combined
+  ErrorLog "/var/log/httpd/error.log"
+
+  DocumentRoot {{ documentroot }}
+
+  <Directory {{ documentroot }}>
+          Options Indexes FollowSymLinks MultiViews
+          AllowOverride None
+          Order allow,deny
+          allow from all
+  </Directory>
+
+
+</VirtualHost>

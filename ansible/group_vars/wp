@@ -1,0 +1,13 @@
+---
+
+docroot: /var/www/wordpress
+blog:
+  title: 'The Hitchhiker's Test for the Galaxy'
+  admin: 'zaphod'
+  pass: 'Slartibartfast'
+  email: 'zaphod@dadams.com'
+
+db:
+  user: marvin
+  pass: FortyTw0
+  name: wp-hog

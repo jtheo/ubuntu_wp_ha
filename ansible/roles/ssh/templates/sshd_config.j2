@@ -1,0 +1,25 @@
+#
+# {{ ansible_managed }}
+#
+
+AcceptEnv LANG LANGUAGE LC_* XMODIFIERS
+AuthorizedKeysFile .ssh/authorized_keys
+ChallengeResponseAuthentication no
+GSSAPIAuthentication yes
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_dsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+
+PasswordAuthentication no
+PermitRootLogin forced-commands-only
+Port 22
+PrintLastLog yes
+Protocol 2
+
+
+SyslogFacility AUTHPRIV
+UsePAM yes
+X11Forwarding no
+
+#Subsystem sftp /usr/libexec/openssh/sftp-server
+

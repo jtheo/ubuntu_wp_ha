@@ -1,0 +1,19 @@
+#
+# {{ ansible_managed }}
+#
+
+interface ignore wildcard
+interface listen 127.0.0.1
+interface listen ::1
+
+driftfile /var/lib/ntp/ntp.drift
+
+statistics loopstats peerstats clockstats
+filegen loopstats file loopstats type day enable
+filegen peerstats file peerstats type day enable
+filegen clockstats file clockstats type day enable
+
+server 0.{{ zone }}.pool.ntp.org
+server 1.{{ zone }}.pool.ntp.org
+server 2.{{ zone }}.pool.ntp.org
+server 3.{{ zone }}.pool.ntp.org

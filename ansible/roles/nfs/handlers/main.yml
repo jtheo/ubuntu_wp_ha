@@ -1,0 +1,8 @@
+---
+- name: Reload nfs
+  service: "name=nfs state=reload"
+
+
+- name: Restart nfs
+  service: "name=nfs state=restart"
+

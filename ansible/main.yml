@@ -1,0 +1,36 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+
+- hosts: all
+  become: yes
+  gather_facts: no
+
+  roles:
+    - hosts
+    - ntp
+    - ssh
+
+- hosts: lb
+  become: yes
+  gather_facts: no
+
+  roles:
+    - haproxy
+
+- hosts: be
+  become: yes
+  gather_facts: no
+
+  roles:
+    - memcached
+    - nfs
+    - mysql
+
+- hosts: wp
+  become: yes
+  gather_facts: no
+
+  roles:
+    - apache
+    - wordpress
+

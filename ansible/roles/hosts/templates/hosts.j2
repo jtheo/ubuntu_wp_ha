@@ -1,0 +1,22 @@
+#
+# {{ ansible_managed }}
+#
+
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+
+127.0.1.1  {{ inventory_hostname }}
+
+# vagrant environment nodes
+192.168.123.10  mgmt
+
+192.168.123.11  lb
+
+192.168.123.21  wp1
+192.168.123.22  wp2
+
+192.168.123.31  be
+
+
+
+

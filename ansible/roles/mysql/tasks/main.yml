@@ -1,0 +1,26 @@
+---
+
+- name: Install mysql
+  yum:
+    name: "{{ item }}"
+    state: present 
+  with_items:
+      - mysql
+      - mysql-server
+
+- name: Ensure MySQL is up and running
+    service: name=mysql state=started enabled=yes
+
+    
+
+- name: Create a database for Wordpress
+  mysql_db:
+    name: {{ db.name }}
+    state: present
+    
+- name: Create database user
+  mysql_user: 
+    user: {{ db.user }} 
+    password: {{ db.pass }} 
+    priv: "{{ db.name }}.*:ALL" 
+    state: present   

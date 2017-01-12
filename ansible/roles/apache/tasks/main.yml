@@ -1,0 +1,31 @@
+---
+
+- name: Ensure httpd is installed
+  yum: name=httpd state=installed
+
+- name: Copy httpd configuration in place.
+  template:
+    src: httpd.conf.j2
+    dest: /etc/httpd/conf/httpd.conf
+    mode: 0644
+    validate: apachectl -t
+  notify: restart httpd
+
+
+- name: Copy Virtualhost config
+  template:
+    src: wordpress.conf.j2
+    dest: /etc/httpd/conf.conf/wordpress.conf
+    mode: 0644
+    validate: apachectl -t
+  notify: reload httpd
+
+- name: Remove default virtualhost
+  file:
+    path: /etc/httpd/conf.d/welcome.conf
+    state: absent
+  notify: reload httpd
+
+- name: Ensure httpd is started and enabled on boot.
+  service: name=httpd state=started enabled=yes
+
