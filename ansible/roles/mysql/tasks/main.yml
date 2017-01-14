@@ -22,5 +22,12 @@
   mysql_user: 
     user: "{{ db.user }}"
     password: "{{ db.pass }}"
+    host: "%"
     priv: "{{ db.name }}.*:ALL" 
     state: present
+
+- name: Remove anonyous users
+  mysql_user:
+    name: ''
+    host_all: yes
+    state: absent

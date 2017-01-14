@@ -1,0 +1,10 @@
+---
+
+nfs:
+ share: /var/nfs/wordpress
+ server: be
+
+db:
+  user: marvin
+  pass: FortyTw0
+  name: wp-hog

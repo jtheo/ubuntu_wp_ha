@@ -5,7 +5,7 @@
 
 - name: Create dir for NFS Share
   file:
-    path: "{{ nfs_share }}"
+    path: "{{ nfs.share }}"
     state: directory
     mode: 755
     owner: nobody
@@ -13,12 +13,12 @@
 
 - name: Create exports
   copy:
-    content: "{{ nfs_share }}  192.168.123.0/24(rw,fsid=0,no_subtree_check,sync,no_root_squash)"
+    content: "{{ nfs.share }}  192.168.123.0/24(rw,fsid=0,no_subtree_check,sync,no_root_squash)"
     dest: /etc/exports
     owner: root
     group: root
     mode: 0644
-    notify: Reload nfs 
+  notify: Reload nfs
 
 - name: Ensure nfs is started and enabled on boot.
   service: name=nfs state=started enabled=yes

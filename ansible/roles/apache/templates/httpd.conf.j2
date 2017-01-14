@@ -2,13 +2,13 @@
 # {{ ansible_managed }}
 #
 
-######### Conf
+######### Conf ######################
 ServerTokens ProductOnly
 KeepAlive On
 MaxKeepAliveRequests 500
 KeepAliveTimeout 5
 
-####### Prefork MPM
+####### Prefork MPM #########################
 <IfModule prefork.c>
 StartServers       20
 MinSpareServers    10
@@ -23,10 +23,7 @@ TraceEnable Off
 ServerSignature Off
 FileETag none
 
-ServerName {{ ansible_hostname }}.localdomain
 
-
-###### Modules
 LoadModule alias_module modules/mod_alias.so
 LoadModule authz_host_module modules/mod_authz_host.so
 LoadModule autoindex_module modules/mod_autoindex.so
@@ -40,6 +37,8 @@ LoadModule mime_module modules/mod_mime.so
 LoadModule negotiation_module modules/mod_negotiation.so
 LoadModule rewrite_module modules/mod_rewrite.so
 LoadModule setenvif_module modules/mod_setenvif.so
+
+ServerName {{ ansible_hostname }}.localdomain
 
 Listen 80
 
@@ -58,3 +57,5 @@ Group apache
 
 
 Include conf.d/*.conf
+
+

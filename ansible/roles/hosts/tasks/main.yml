@@ -3,7 +3,7 @@
 - name: "Install hosts file"
   template:
     src: hosts.j2
-    dest: /tmp/hosts
+    dest: /etc/hosts
     owner: root
     group: root
     mode: 0644

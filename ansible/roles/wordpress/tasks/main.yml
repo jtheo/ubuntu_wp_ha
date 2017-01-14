@@ -22,45 +22,46 @@
   when: result|failed
 
 - name: Check if wp-config already exist
-  stat: path={{ documentroot }}/wp-config.php
-  register: wp-config
+  stat: 
+    path: "{{ documentroot }}/wp-config.php"
+  register: register
 
 - name: Create the wp-config file
-  command: /usr/local/bin/wp-cli core config --dbname={{ db.name }} --dbuser={{ db.user }} --dbpass={{ db.pass }}
+  command: "/usr/local/bin/wp-cli core config --dbname={{ db.name }} --dbuser={{ db.user }} --dbpass={{ db.pass }} --dbhost=be"
   args:
     chdir: "{{ documentroot }}"
-  when: wp-config.stat.exists == False
+  when: register.stat.exists == False
 
+- name: Ensure nfs-utils is installed
+  yum: name=nfs-utils state=installed
+
+- name: Create uploads 
+  file: 
+    path: "{{ documentroot }}/wp-content/uploads"
+    state: directory
 
 - name: create database
   command: /usr/local/bin/wp-cli db create
   args:
     chdir: "{{ documentroot }}"
-  when: wp-config.stat.exists == False
+  run_once: true
+  delegate_to: wp1
 
 - name: Install WordPress
   command: /usr/local/bin/wp-cli core install --url=http://localhost --title="{{ blog.title }}"  --admin_user="{{ blog.admin }}" --admin_password="{{ blog.pass }}" --admin_email="{{ blog.email }}"
   args:
     chdir: "{{ documentroot }}"
-  when: result|failed
-
-- name: Ensure nfs-utils is installed
-  yum: name=nfs-utils state=installed
-
-- name: Mount nfs
-  mount:
-    name: "{{ documentroot }}/wp-content/uploads"
-    src: "{{hostvars[groups['be'][0]]['ansible_eth0']['ipv4']['address']}}:/{{ nfs_share }}"
-    fstype: nfs
-    opts: defaults,nobootwait
-    dump: 0
-    passno: 2
-    state: mounted
+  run_once: true
+  delegate_to: wp1
 
 
 - name: Save the script to create a few posts
   template:
     src: create_post.sh.j2
-    dest: /usr/local/bin/create_post.sh
+    dest: '/usr/local/bin/create_post.sh'
     mode: 0755
 
+- name: create posts
+  command: "/usr/local/bin/create_post.sh"
+  run_once: true
+  delegate_to: wp1

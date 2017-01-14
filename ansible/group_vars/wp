@@ -6,8 +6,3 @@ blog:
   admin: 'zaphod'
   pass: 'Slartibartfast'
   email: 'zaphod@dadams.com'
-
-db:
-  user: marvin
-  pass: FortyTw0
-  name: wp-hog
