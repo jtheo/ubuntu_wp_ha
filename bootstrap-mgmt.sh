@@ -98,12 +98,6 @@ chmod 600 /home/vagrant/.ssh/ansible
 mkdir /var/log/ansible
 chown vagrant.vagrant /var/log/ansible
 
-cd ansible
-
-#ansible -m ping all
-
-#sudo -u vagrant sh -c "time ansible-playbook main.yml"
-
 echo "### Thanks for all the fish"
 exit 0
 
