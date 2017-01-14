@@ -23,12 +23,12 @@ The infrastructure is composed of
 
 ### Usage
 Once downloaded the project from GitHub, you should start the Vagrant project and once completed login on the mgmt node and run the ansible main playbook: 
-- git clone https://github.com/jtheo/ubuntu_wp_ha
-- cd ubuntu_wp_ha
-- vagrant up
-- vagrant ssh mgmt
-- cd ansible
-- ansible-playbook main.yml
+    git clone https://github.com/jtheo/ubuntu_wp_ha
+    cd ubuntu_wp_ha
+    vagrant up
+    vagrant ssh mgmt
+    cd ansible
+    ansible-playbook main.yml
 
 At the end of the operations, browsing http://localhost:8080 you should be able to see a WordPress blog with an image in the header and a few blog posts with Lorem Ipsum and similar ones.
 
