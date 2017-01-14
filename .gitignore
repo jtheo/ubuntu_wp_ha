@@ -4,4 +4,4 @@
 
 # Vagrant stuff
 boxes/*
-*.vagrant
+.vagrant/
