@@ -1,0 +1,11 @@
+---
+
+- name: Remove some useless packages
+  apt:
+    name: "{{ item }}"
+    state: absent
+    cache_valid_time: 3600
+    update_cache: yes
+  with_items:
+    ['chef', 'chef-zero', 'puppet', 'puppet-common']
+

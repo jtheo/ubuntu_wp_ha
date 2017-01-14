@@ -1,0 +1,10 @@
+---
+
+- hosts: wp
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - apache
+    - wordpress
+

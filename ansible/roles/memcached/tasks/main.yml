@@ -1,7 +1,9 @@
 ---
 
 - name: Ensure memcached is installed
-  yum: name=memcached state=installed
+  apt: 
+    name: memcached 
+    state: installed
 
 - name: Ensure memcached is started and enabled on boot.
   service: name=memcached state=started enabled=yes

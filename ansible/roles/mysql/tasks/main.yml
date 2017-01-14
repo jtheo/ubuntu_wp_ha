@@ -1,33 +1,55 @@
 ---
+- name: Set MySQL root password before installing
+  debconf: name='mysql-server' question='mysql-server/root_password' value='{{ mysql_root_password }}' vtype='password'
+
+- name: Confirm MySQL root password before installing
+  debconf: name='mysql-server' question='mysql-server/root_password_again' value='{{ mysql_root_password }}' vtype='password'
 
 - name: Install mysql
-  yum:
+  apt:
     name: "{{ item }}"
     state: present 
+    force: yes
   with_items:
-      - mysql
-      - mysql-server
-      - MySQL-python
+      - mysql-common
+      - mysql-client-5.6 
+      - mysql-server-5.6
+      - python-mysqldb
+
+
+- name: Put Mysql Listening on all the interfaces
+  lineinfile:
+    dest: /etc/mysql/my.cnf
+    regexp: '^bind-address\s*=\s*127\.0\.0\.1\s*$'
+    line: 'bind-address            = 0.0.0.0'
+    state: present
+  notify: Restart Mysql
 
 - name: Ensure MySQL is up and running
-  service: name=mysqld state=started enabled=yes
+  service: name=mysql state=started enabled=yes
 
 
 - name: Create a database for Wordpress
   mysql_db:
+    login_password: "{{ mysql_root_password }}"
+    login_user: "root"
     name: "{{ db.name }}"
     state: present
 
 - name: Create database user
-  mysql_user: 
+  mysql_user:
+    login_password: "{{ mysql_root_password }}"
+    login_user: 'root'
     user: "{{ db.user }}"
     password: "{{ db.pass }}"
     host: "%"
-    priv: "{{ db.name }}.*:ALL" 
+    priv: "{{ db.name }}.*:ALL"
     state: present
 
 - name: Remove anonyous users
   mysql_user:
+    login_password: "{{ mysql_root_password }}"
+    login_user: 'root'
     name: ''
     host_all: yes
     state: absent

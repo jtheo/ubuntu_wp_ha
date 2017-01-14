@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - remove
+    - hosts
+    - ntp
+    - ssh
+
+

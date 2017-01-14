@@ -1,3 +1,5 @@
 ---
 
 nfs_share: /var/nfs/wordpress
+
+mysql_root_password: N0t$afePass

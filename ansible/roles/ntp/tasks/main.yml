@@ -3,14 +3,20 @@
   file: src=/usr/share/zoneinfo/Europe/London dest=/etc/localtime state=link force=yes
 
 - name: Ensure NTP and utilities are installed
-  yum: name={{ item }} state=installed
+  apt:
+    name: "{{ item }}"
+    state: installed
+    update_cache: yes
+    cache_valid_time: yes
   with_items:
     - ntp
     - ntpdate
 
 - name: Ensure the right configuration is in place
-  template: src='ntpd.conf.j2' dest='/etc/ntp.conf'
+  template: 
+    src: 'ntpd.conf.j2' 
+    dest: '/etc/ntp.conf'
   notify: restart ntp
 
 - name: Ensure NTP is up and running
-  service: name=ntpd state=started enabled=yes
+  service: name=ntp state=started enabled=yes

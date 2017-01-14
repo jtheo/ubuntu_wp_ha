@@ -1,61 +1,67 @@
 ---
 
-
-- name: Add repository
-  yum_repository:
-    name: epel
-    description: EPEL YUM repo
-    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
-    gpgcheck: no
-
-- name: Ensure httpd is installed
-  yum: name=httpd state=installed
-
-- name: Ensure PHP Packages are installed
-  yum:
+- name: Install apache2
+  apt:
     name: "{{ item }}"
     state: present
-  with_items: ['php', 'php-common', 'php-mysql', 'php-gd', 'php-xml', 'php-mbstring', 'php-mcrypt']
+  with_items: 
+    ['apache2', 'apache2-utils', 'python-mysqldb']
+
+- name: Install PHP Packages
+  apt:
+    name: "{{ item }}"
+    state: installed
+  with_items: 
+    ['php5', 'php5-cli', 'php5-gd', 'php5-apcu', 'php5-memcached', 'libapache2-mod-php5', 'php5-mcrypt', 'php5-mysqlnd-ms']
 
 - name: Install mysql client
-  yum:
-    name: mysql
+  apt:
+    name: mysql-client
     state: present
 
-- name: Create link for mime.types
+- name: Copy config file for session on memcached
   file:
-    dest: /etc/httpd/conf/mime.types
-    src: /etc/mime.types
-    state: link
-
-- name: Copy httpd configuration in place.
-  template:
-    src: httpd.conf.j2
-    dest: /etc/httpd/conf/httpd.conf
+    dest: /etc/php5/mods-available/memcached.ini
+    src: memcached.ini
+    owner: root
+    group: root
     mode: 0644
-  notify: restart httpd
+
+- name: Copy apache2 configuration in place.
+  template:
+    src: apache2.conf.j2
+    dest: /etc/apache2/apache2.conf
+    mode: 0644
+  notify: restart apache2
 
 - name: Create DocumentRoot
   file:
     path: "{{ documentroot }}"
     state: directory
-    mode: 755
-    owner: apache
-    group: apache
+    mode: 0755
+    owner: www-data
+    group: www-data
 
 - name: Copy Virtualhost config
   template:
     src: wordpress.conf.j2
-    dest: /etc/httpd/conf.d/wordpress.conf
+    dest: /etc/apache2/sites-available/wordpress.conf
     mode: 0644
-  notify: reload httpd
+  notify: reload apache2
 
 - name: Remove default virtualhost
   file:
-    path: /etc/httpd/conf.d/welcome.conf
+    path: /etc/apache2/sites-enabled/000-default.conf
     state: absent
-  notify: reload httpd
+  notify: reload apache2
 
-- name: Ensure httpd is started and enabled on boot.
-  service: name=httpd state=started enabled=yes
+- name: Activate Wordpress Virtualhost
+  file:
+    dest: /etc/apache2/sites-enabled/wordpress.conf
+    src: /etc/apache2/sites-available/wordpress.conf
+    state: link
+  notify: reload apache2
+
+- name: Ensure apache2 is started and enabled on boot.
+  service: name=apache2 state=started enabled=yes
 

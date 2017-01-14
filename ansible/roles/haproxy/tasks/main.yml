@@ -1,7 +1,18 @@
 ---
+- name: Install HAProxy
+  apt:
+    name: "{{ item }}"
+    state: installed
+  with_items: 
+      ['hatop', 'haproxy']
 
-- name: Ensure HAProxy is installed
-  yum: name=haproxy state=installed
+
+- name: Enable haproxy
+  lineinfile:
+    dest: /etc/default/haproxy
+    regexp: "^ENABLED.+$"
+    line: "ENABLED=1"
+    state: present
 
 - name: Copy HAProxy configuration in place.
   template:
@@ -10,6 +21,8 @@
     mode: 0644
     validate: haproxy -f %s -c -q
   notify: restart haproxy
+
+
 
 - name: Ensure HAProxy is started and enabled on boot.
   service: name=haproxy state=started enabled=yes

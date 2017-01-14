@@ -1,0 +1,12 @@
+---
+
+- hosts: be
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - memcached
+    - nfs
+    - mysql
+
+

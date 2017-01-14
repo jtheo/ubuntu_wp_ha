@@ -1,15 +1,20 @@
 ---
 
 - name: Ensure nfs is installed
-  yum: name=nfs-utils state=installed
+  apt:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - nfs-common
+    - nfs-kernel-server
 
 - name: Create dir for NFS Share
   file:
     path: "{{ nfs.share }}"
     state: directory
-    mode: 755
+    mode: 0755
     owner: nobody
-    group: nobody
+    group: nogroup
 
 - name: Create exports
   copy:
@@ -21,4 +26,4 @@
   notify: Reload nfs
 
 - name: Ensure nfs is started and enabled on boot.
-  service: name=nfs state=started enabled=yes
+  service: name=nfs-kernel-server state=started enabled=yes

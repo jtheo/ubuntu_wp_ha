@@ -1,0 +1,9 @@
+---
+- hosts: lb
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - haproxy
+
+

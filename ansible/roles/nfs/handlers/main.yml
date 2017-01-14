@@ -1,8 +1,8 @@
 ---
 - name: Reload nfs
-  service: "name=nfs state=reload"
+  service: "name=nfs-kernel-server state=reloaded"
 
 
 - name: Restart nfs
-  service: "name=nfs state=restart"
+  service: "name=nfs-kernel-server state=restarted"
 

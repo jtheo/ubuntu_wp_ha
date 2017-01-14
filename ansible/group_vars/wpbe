@@ -1,7 +1,7 @@
 ---
 
 nfs:
- share: /var/nfs/wordpress
+ share: /nfs
  server: be
 
 db:
